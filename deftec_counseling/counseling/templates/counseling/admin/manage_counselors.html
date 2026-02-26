@@ -1,0 +1,85 @@
+{% extends 'counseling/base.html' %}
+
+{% block content %}
+<style>
+    body {
+        background: #f4f6f9;
+        font-family: Arial, sans-serif;
+    }
+
+    .container {
+        width: 90%;
+        margin: auto;
+        margin-top: 30px;
+    }
+
+    h2 {
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 12px;
+        border-bottom: 1px solid #ddd;
+        text-align: left;
+    }
+
+    th {
+        background: #007bff;
+        color: white;
+        font-size: 15px;
+    }
+
+    .btn {
+        padding: 7px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+        color: white;
+        text-decoration: none;
+    }
+
+    .edit-btn { background: #28a745; }
+    .delete-btn { background: #dc3545; }
+    .edit-btn:hover { background: #218838; }
+    .delete-btn:hover { background: #c82333; }
+
+</style>
+
+<div class="container">
+    <h2>Manage Counselors</h2>
+
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Specialization</th>
+            <th>Actions</th>
+        </tr>
+
+        {% for c in counselors %}
+        <tr>
+            <td>{{ c.full_name }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.specialization }}</td>
+            <td>
+                <a href="{% url 'edit_counselor' c.id %}" class="btn edit-btn">Edit</a>
+                <a href="{% url 'delete_counselor' c.id %}" class="btn delete-btn"
+                   onclick="return confirm('Are you sure you want to delete this counselor?');">
+                   Delete
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
+{% endblock %}

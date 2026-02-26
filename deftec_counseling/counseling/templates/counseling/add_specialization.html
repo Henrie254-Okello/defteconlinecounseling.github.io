@@ -1,0 +1,130 @@
+{% extends 'counseling/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="form-card">
+        <h3 class="form-title">Add New Specialization</h3>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+                {% if form.name.errors %}
+                    <div class="error">{{ form.name.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-group">
+                {{ form.description.label_tag }}
+                {{ form.description }}
+                {% if form.description.errors %}
+                    <div class="error">{{ form.description.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Add Specialization</button>
+                <a href="{% url 'manage_specializations' %}" class="btn btn-secondary">Back</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.form-card {
+    max-width: 500px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 30px 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.form-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.form-title {
+    text-align: center;
+    font-size: 1.5rem;
+    color: #007bff;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    margin-top: 5px;
+    font-size: 1rem;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+    outline: none;
+}
+
+.form-group label {
+    font-weight: 500;
+    color: #343a40;
+}
+
+.error {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 5px;
+}
+
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+}
+
+.btn {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: background 0.3s;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0069d9;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+@media (max-width: 576px) {
+    .form-card {
+        padding: 20px;
+    }
+    .form-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+</style>
+{% endblock %}

@@ -1,0 +1,7 @@
+<h1>{{ counselor.user.get_full_name }}</h1>
+<p>Email: {{ counselor.user.email }}</p>
+<p>Specialization: {{ counselor.specialization.name }}</p>
+<p>Phone: {{ counselor.phone }}</p>
+<p>Bio: {{ counselor.bio }}</p>
+<a href="{% url 'admin_dashboard' %}">Back to Admin Dashboard</a>
+{% endblock %}

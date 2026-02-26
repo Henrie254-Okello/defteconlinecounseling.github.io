@@ -1,0 +1,58 @@
+{% extends 'counseling/base.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f4f4f4;
+    }
+
+    .navbar {
+        background-color: #007bff;
+    }
+
+    .online {
+        color: green;
+    }
+
+    .offline {
+        color: red;
+    }
+
+    #chat-messages {
+        height: 300px;
+        overflow-y: scroll;
+        border: 1px solid #ccc;
+        padding: 10px;
+    }
+
+    #video-container {
+        display: flex;
+    }
+
+    video {
+        width: 300px;
+        height: 200px;
+        border: 1px solid #000;
+    }
+</style>
+<h2>Appointment: {{ appointment }}</h2>
+<p>Counselor Status: <span class="{% if counselor_status %}online{% else %}offline{% endif %}">{{ counselor_status|yesno:"Online,Offline" }}</span></p>
+
+<div id="chat-messages"></div>
+<input type="text" id="chat-message-input" placeholder="Type a message">
+<button id="chat-message-submit">Send</button>
+
+<div id="video-container">
+    <video id="localVideo" autoplay playsinline></video>
+    <video id="remoteVideo" autoplay playsinline></video>
+</div>
+<button id="start-call">Start Call</button>
+<button id="end-call">End Call</button>
+
+<script>
+    var appointmentId = {{ appointment.id }};
+</script>
+<script src="{% static 'js/chat.js' %}"></script>
+<script src="{% static 'js/webrtc.js' %}"></script>
+{% endblock %}

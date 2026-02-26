@@ -1,0 +1,43 @@
+{% extends 'counseling/base.html' %}
+{% block content %}
+
+<div class="container mt-4">
+  <h3>Manage Counselors</h3>
+
+  <!-- Back button -->
+  <a href="{% url 'admin_dashboard' %}" class="btn btn-secondary mb-3">Back</a>
+
+  <!-- Add Counselor button -->
+  <a href="{% url 'add_counselor' %}" class="btn btn-primary mb-3 ms-2">Add Counselor</a>
+
+  <table class="table table-bordered mt-3">
+    <thead class="table-dark">
+      <tr>
+        <th>Name</th>
+        <th>Email</th>
+        <th>Specialization</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for c in counselors %}
+      <tr>
+        <td>{{ c.user.get_full_name }}</td>
+        <td>{{ c.user.email }}</td>
+        <td>{{ c.specialization }}</td>
+        <td>
+          <a href="{% url 'edit_counselor' c.id %}" class="btn btn-sm btn-warning">Edit</a>
+          <a href="{% url 'delete_counselor' c.id %}" class="btn btn-sm btn-danger"
+             onclick="return confirm('Delete counselor?')">Delete</a>
+        </td>
+      </tr>
+      {% empty %}
+      <tr>
+        <td colspan="4" class="text-center text-muted">No counselors found.</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

@@ -1,0 +1,158 @@
+{% extends 'counseling/base.html' %}
+
+{% block content %}
+<div class="container mt-5 add-counselor-container">
+
+    <!-- Info Card -->
+    <div class="info-card mb-4">
+        <h5>Total Counselors</h5>
+        <h2>{{ counselors_count }}</h2>
+    </div>
+
+    <h3 class="form-title">Add Counselor</h3>
+    <form method="post" class="counselor-form">
+        {% csrf_token %}
+        
+        <div class="form-section">
+            <h5>User Details</h5>
+            {{ user_form.as_p }}
+        </div>
+
+        <div class="form-section">
+            <h5>Counselor Details</h5>
+            {{ counselor_form.as_p }}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Add Counselor</button>
+            <a href="{% url 'manage_counselors' %}" class="btn btn-secondary">Back</a>
+        </div>
+    </form>
+</div>
+
+<style>
+/* Container styling */
+.add-counselor-container {
+    max-width: 700px;
+    background-color: #f8f9fa;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+    margin-bottom: 50px;
+}
+
+/* Info card */
+.info-card {
+    background-color: #007bff;
+    color: #fff;
+    text-align: center;
+    padding: 20px 15px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.info-card h5 {
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+.info-card h2 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+/* Form title */
+.form-title {
+    font-weight: 600;
+    color: #343a40;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+/* Form sections */
+.form-section {
+    margin-bottom: 25px;
+}
+
+.form-section h5 {
+    font-weight: 500;
+    color: #007bff;
+    margin-bottom: 15px;
+}
+
+/* Form inputs */
+.counselor-form input[type="text"],
+.counselor-form input[type="email"],
+.counselor-form input[type="password"],
+.counselor-form select,
+.counselor-form textarea {
+    width: 100%;
+    padding: 10px 12px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ced4da;
+    font-size: 0.95rem;
+    transition: border 0.3s ease, box-shadow 0.3s ease;
+}
+
+.counselor-form input:focus,
+.counselor-form select:focus,
+.counselor-form textarea:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0,123,255,0.3);
+    outline: none;
+}
+
+/* Form actions */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: flex-start;
+}
+
+.btn {
+    padding: 8px 20px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #fff;
+    border: none;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .add-counselor-container {
+        padding: 20px;
+    }
+    .form-actions {
+        flex-direction: column;
+    }
+    .btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+</style>
+{% endblock %}

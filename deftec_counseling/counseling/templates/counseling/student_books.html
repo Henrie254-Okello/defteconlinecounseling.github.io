@@ -1,0 +1,12 @@
+<h3>Available Books</h3>
+<div class="appointments-grid">
+    {% for book in books %}
+        <div class="appointment-card">
+            <strong>{{ book.title }}</strong><br>
+            Uploaded by: {{ book.uploaded_by.first_name }}<br>
+            <a href="{{ book.file.url }}" download class="call-btn chat">Download</a>
+        </div>
+    {% empty %}
+        <p>No books available yet.</p>
+    {% endfor %}
+</div>

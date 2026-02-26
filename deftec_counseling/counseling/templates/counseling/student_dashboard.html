@@ -1,0 +1,288 @@
+{% extends 'counseling/base.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: "Segoe UI", Arial, sans-serif;
+        background: #f5f6fa;
+        margin: 0;
+        padding: 0;
+    }
+
+    /* Navbar */
+    .navbar {
+        background: #007bff;
+        color: white;
+        padding: 12px 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .navbar h1 {
+        font-size: 22px;
+        margin: 0;
+    }
+
+    .navbar a {
+        color: white;
+        text-decoration: none;
+        padding: 8px 16px;
+        border: 1px solid white;
+        border-radius: 6px;
+        transition: 0.2s ease;
+    }
+
+    .navbar a:hover {
+        background: white;
+        color: #007bff;
+    }
+
+    .dashboard-container {
+        max-width: 1000px;
+        margin: 30px auto;
+        padding: 0 20px;
+    }
+
+    h2 {
+        font-size: 26px;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+
+    .section {
+        background: white;
+        padding: 25px 20px;
+        margin-bottom: 25px;
+        border-radius: 12px;
+        box-shadow: 0 6px 20px rgba(0,0,0,0.05);
+        transition: transform 0.2s ease;
+    }
+
+    .section:hover {
+        transform: translateY(-2px);
+    }
+
+    .section h3 {
+        font-size: 20px;
+        font-weight: 600;
+        margin-bottom: 18px;
+        color: #007bff;
+        border-left: 4px solid #007bff;
+        padding-left: 12px;
+    }
+
+    form button {
+        padding: 10px 22px;
+        background: #007bff;
+        border: none;
+        border-radius: 6px;
+        color: white;
+        cursor: pointer;
+        font-size: 16px;
+        transition: 0.2s ease;
+        margin-top: 12px;
+    }
+
+    form button:hover {
+        background: #0056b3;
+    }
+
+    ul {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    ul li {
+        background: #f8f9fa;
+        padding: 14px 18px;
+        margin-bottom: 12px;
+        border-radius: 10px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+        transition: transform 0.2s ease;
+    }
+
+    ul li:hover {
+        transform: translateY(-2px);
+    }
+
+    ul li a {
+        text-decoration: none;
+        font-weight: 600;
+        color: #007bff;
+    }
+
+    .status-badge {
+        padding: 5px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        color: white;
+        font-weight: 600;
+        text-transform: capitalize;
+    }
+
+    .pending { background: #ffc107; }
+    .approved { background: #28a745; }
+    .cancelled { background: #dc3545; }
+
+    .download-link {
+        background: #28a745;
+        color: white;
+        padding: 6px 14px;
+        border-radius: 6px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: 0.2s ease;
+    }
+
+    .download-link:hover {
+        background: #1e7e34;
+    }
+
+    @media (max-width: 768px) {
+        .dashboard-container { padding: 0 10px; }
+        .section h3 { font-size: 18px; }
+    }
+</style>
+
+<!-- Navbar with Logout -->
+<div class="navbar">
+    <h1>Student Dashboard</h1>
+    <a href="{% url 'logout' %}">Logout</a>
+</div>
+
+<div class="dashboard-container">
+
+    <!-- Book Appointment -->
+    <div class="section">
+        <h3>Book an Appointment</h3>
+        <form method="post" id="appointment-form">
+            {% csrf_token %}
+
+            <!-- Specialization Dropdown -->
+            <p>
+                <label for="id_specialization">Specialization:</label><br>
+                <select id="id_specialization" name="specialization">
+                    <option value="">Select Specialization</option>
+                    {% for spec in form.fields.specialization.queryset %}
+                    <option value="{{ spec.id }}">{{ spec.name }}</option>
+                    {% endfor %}
+                </select>
+            </p>
+
+            <!-- Counselor Dropdown -->
+            <p>
+                <label for="id_counselor">Counselor:</label><br>
+                <select id="id_counselor" name="counselor">
+                    <option value="">Select a counselor</option>
+                    {% if form.initial.counselor %}
+                    <option value="{{ form.initial.counselor.id }}" selected>{{ form.initial.counselor.get_full_name }}</option>
+                    {% endif %}
+                </select>
+            </p>
+
+            <!-- Other form fields (date, time, etc.) -->
+            {% for field in form %}
+                {% if field.name not in "specialization counselor" %}
+                    <p>{{ field.label_tag }}<br>{{ field }}</p>
+                {% endif %}
+            {% endfor %}
+
+            {{ form.non_field_errors }}
+
+            <button type="submit">Book Appointment</button>
+        </form>
+    </div>
+
+    <!-- Upcoming Appointments -->
+    <div class="section">
+        <h3>Upcoming Appointments</h3>
+        {% if appointments %}
+        <ul>
+            {% for appt in appointments %}
+            <li>
+                <a href="{% url 'appointment_detail' appt.id %}">
+                    {{ appt }}
+                </a>
+                {% if appt.status == "pending" %}
+                    <span class="status-badge pending">Pending</span>
+                {% elif appt.status == "approved" %}
+                    <span class="status-badge approved">Approved</span>
+                {% else %}
+                    <span class="status-badge cancelled">Cancelled</span>
+                {% endif %}
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No upcoming appointments.</p>
+        {% endif %}
+    </div>
+
+    <!-- Available Books -->
+    <div class="section">
+        <h3>Available Books</h3>
+        {% if books %}
+        <ul>
+            {% for book in books %}
+            <li>
+                <span>{{ book.title }} by {{ book.uploaded_by.get_full_name }}</span>
+                <a href="{{ book.file.url }}" class="download-link" download>Download</a>
+            </li>
+            {% endfor %}
+        </ul>
+        {% else %}
+        <p>No books uploaded yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<!-- AJAX Script to populate counselors -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const specSelect = document.getElementById('id_specialization');
+    const counselorSelect = document.getElementById('id_counselor');
+
+    specSelect.addEventListener('change', function() {
+        const specId = this.value;
+
+        // Clear counselor options while loading
+        counselorSelect.innerHTML = '<option value="">Loading...</option>';
+
+        if (!specId) {
+            counselorSelect.innerHTML = '<option value="">Select a counselor</option>';
+            return;
+        }
+
+        // Use Django URL template for AJAX endpoint
+        fetch("{% url 'get_counselors' %}?specialization=" + specId)
+            .then(response => response.json())
+            .then(data => {
+                counselorSelect.innerHTML = '<option value="">Select a counselor</option>';
+                data.forEach(c => {
+                    const option = document.createElement('option');
+                    option.value = c.id;
+                    option.textContent = c.name || 'Unknown';
+                    counselorSelect.appendChild(option);
+                });
+            })
+            .catch(error => {
+                console.error('Error fetching counselors:', error);
+                counselorSelect.innerHTML = '<option value="">Error loading counselors</option>';
+            });
+    });
+});
+</script>
+
+{% endblock %}

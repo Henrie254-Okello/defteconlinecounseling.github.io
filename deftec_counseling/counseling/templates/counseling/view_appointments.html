@@ -1,0 +1,137 @@
+{% extends 'counseling/base.html' %}
+{% block content %}
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 style="font-weight: 600; color: #343a40;">Appointments</h3>
+        <a href="{% url 'dashboard' %}" class="btn back-btn">
+            <i class="bi bi-arrow-left"></i> Back
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="appt-table">
+            <thead>
+                <tr>
+                    <th>Student</th>
+                    <th>Counselor</th>
+                    <th>Date</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for appt in appointments %}
+                <tr>
+                    <td>{{ appt.student.name }}</td>
+                    <td>{{ appt.counselor.name }}</td>
+                    <td>{{ appt.date }}</td>
+                    <td>
+                        {% if appt.status == 'Pending' %}
+                            <span class="badge pending">{{ appt.status }}</span>
+                        {% elif appt.status == 'Completed' %}
+                            <span class="badge completed">{{ appt.status }}</span>
+                        {% elif appt.status == 'Cancelled' %}
+                            <span class="badge cancelled">{{ appt.status }}</span>
+                        {% else %}
+                            {{ appt.status }}
+                        {% endif %}
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="4" class="text-center text-muted">No appointments found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<style>
+/* Back button */
+.back-btn {
+    background-color: #6c757d;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 500;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    transition: background 0.3s;
+}
+
+.back-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Appointments table */
+.appt-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.appt-table thead {
+    background-color: #007bff;
+    color: #fff;
+    font-weight: 600;
+}
+
+.appt-table th,
+.appt-table td {
+    padding: 12px 15px;
+    text-align: left;
+}
+
+.appt-table tbody tr {
+    background-color: #f9f9f9;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.appt-table tbody tr:nth-child(even) {
+    background-color: #eef2f7;
+}
+
+.appt-table tbody tr:hover {
+    background-color: #dbe5f7;
+    transform: translateY(-2px);
+}
+
+/* Status badges */
+.badge {
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: #fff;
+}
+
+.badge.pending {
+    background-color: #ffc107;
+}
+
+.badge.completed {
+    background-color: #28a745;
+}
+
+.badge.cancelled {
+    background-color: #dc3545;
+}
+
+/* Responsive */
+@media (max-width: 576px) {
+    .appt-table th, .appt-table td {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+    }
+    .back-btn {
+        padding: 6px 12px;
+        font-size: 0.9rem;
+    }
+}
+</style>
+{% endblock %}

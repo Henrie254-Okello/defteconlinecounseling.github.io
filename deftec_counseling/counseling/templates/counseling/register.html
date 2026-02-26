@@ -1,0 +1,180 @@
+{% extends 'counseling/base.html' %}
+
+{% block content %}
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        margin: 0;
+        padding: 0;
+        background: #f4f4f4;
+    }
+
+    /* Hero background with animated gradient overlay */
+    .hero {
+        position: relative;
+        background-image: url('https://images.unsplash.com/photo-1607746882042-944635dfe10e?auto=format&fit=crop&w=1470&q=80');
+        background-size: cover;
+        background-position: center;
+        height: 250px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        text-shadow: 1px 1px 5px rgba(0,0,0,0.6);
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(270deg, #007bff, #00c6ff, #007bff);
+        background-size: 600% 600%;
+        animation: gradientShift 15s ease infinite;
+        opacity: 0.5;
+        z-index: 0;
+    }
+
+    @keyframes gradientShift {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
+
+    .hero h1 {
+        position: relative;
+        z-index: 1;
+        font-size: 32px;
+        text-align: center;
+    }
+
+    /* Registration card */
+    .registration-card {
+        background: white;
+        padding: 40px 30px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        max-width: 500px;
+        margin: -80px auto 50px;
+        animation: fadeInUp 0.8s ease forwards;
+    }
+
+    h2 {
+        text-align: center;
+        color: #007bff;
+        margin-bottom: 30px;
+        font-weight: 700;
+    }
+
+    /* Floating labels */
+    .form-group {
+        position: relative;
+        margin-bottom: 25px;
+    }
+
+    .form-group input, .form-group select {
+        width: 100%;
+        padding: 12px;
+        font-size: 16px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        outline: none;
+        background: none;
+    }
+
+    .form-group label {
+        position: absolute;
+        top: 12px;
+        left: 12px;
+        color: #aaa;
+        font-size: 16px;
+        pointer-events: none;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus + label,
+    .form-group input:not(:placeholder-shown) + label,
+    .form-group select:focus + label,
+    .form-group select:not([value=""]) + label {
+        top: -10px;
+        left: 10px;
+        font-size: 12px;
+        color: #007bff;
+        background: white;
+        padding: 0 5px;
+    }
+
+    /* Animated button */
+    .btn-primary {
+        width: 100%;
+        padding: 12px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        transform: translateY(-2px) rotate(-1deg);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        animation: buttonShake 0.3s ease;
+    }
+
+    @keyframes buttonShake {
+        0%, 100% { transform: translateX(0); }
+        25% { transform: translateX(-3px) rotate(-1deg); }
+        50% { transform: translateX(3px) rotate(1deg); }
+        75% { transform: translateX(-2px) rotate(-0.5deg); }
+    }
+
+    /* Fade in animation */
+    @keyframes fadeInUp {
+        0% { opacity: 0; transform: translateY(20px); }
+        100% { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+        .hero h1 {
+            font-size: 24px;
+            padding: 0 15px;
+        }
+
+        .registration-card {
+            padding: 30px 20px;
+            margin-top: -60px;
+        }
+
+        .btn-primary {
+            font-size: 14px;
+        }
+    }
+</style>
+
+<div class="hero">
+    <h1>Join DEFTEC Online Counseling</h1>
+</div>
+
+<div class="registration-card">
+    <h2>Student Registration</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group">
+                {{ field }}
+                <label>{{ field.label }}</label>
+                {% if field.errors %}
+                    <div style="color: red; font-size: 13px;">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">Register</button>
+    </form>
+</div>
+{% endblock %}

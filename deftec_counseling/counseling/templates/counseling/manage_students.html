@@ -1,0 +1,242 @@
+{% extends 'counseling/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <!-- Back button -->
+    <a href="{% url 'dashboard' %}" class="back-btn">
+        <i class="bi bi-arrow-left"></i> Back
+    </a>
+
+    <h3 class="mb-3">Manage Students</h3>
+<div class="container mt-4">
+
+    <!-- Search & Filter -->
+    <form method="get" class="row g-3 mb-4">
+
+        <!-- Search by Service Number -->
+        <div class="col-md-4">
+            <input type="text"
+                   name="service_number"
+                   class="form-control"
+                   placeholder="Search by Service Number"
+                   value="{{ service_query }}">
+        </div>
+
+        <!-- Filter by Rank -->
+        <div class="col-md-4">
+            <select name="rank" class="form-select">
+                <option value="">Filter by Rank</option>
+                {% for r in ranks %}
+                    <option value="{{ r }}"
+                        {% if r == rank_filter %}selected{% endif %}>
+                        {{ r }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="col-md-4">
+            <button type="submit" class="btn btn-primary">
+                <i class="bi bi-search"></i> Apply
+            </button>
+            <a href="{% url 'manage_students' %}" class="btn btn-secondary">
+                Reset
+            </a>
+            <a href="{% url 'export_students_excel' %}?service_number={{ service_query }}&rank={{ rank_filter }}"
+   class="btn btn-success">
+    📥 Export to Excel
+</a>
+        </div>
+    </form>
+
+    <div class="table-container">
+    <table class="student-table">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Service Number</th>
+                <th>Rank</th>
+                <th>Full Name</th>
+                <th>School</th>
+                <th>Class</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for student in students %}
+            <tr class="{% if student.is_approved %}approved{% else %}pending{% endif %}">
+                <td>{{ forloop.counter }}</td>
+                <td>{{ student.service_number|default:"N/A" }}</td>
+                <td>{{ student.rank|default:"N/A" }}</td>
+             <td>
+    {% if student.first_name or student.last_name %}
+        {{ student.first_name }} {{ student.last_name }}
+    {% else %}
+        {{ student.username }}
+    {% endif %}
+</td>
+
+
+                <td>{{ student.school|default:"N/A" }}</td>
+                <td>{{ student.class_name|default:"N/A" }}</td>
+                <td>
+                    {% if student.is_approved %}
+                        <span class="status-badge approved">
+                            <i class="bi bi-check-circle"></i> Approved
+                        </span>
+                    {% else %}
+                        <span class="status-badge pending">
+                            <i class="bi bi-hourglass-split"></i> Pending
+                        </span>
+                    {% endif %}
+                </td>
+                <td class="actions">
+                    {% if not student.is_approved %}
+                        <a href="{% url 'approve_student' student.id %}" class="btn approve-btn">
+                            <i class="bi bi-person-check"></i> Approve
+                        </a>
+                    {% else %}
+                        <a href="{% url 'reject_student' student.id %}" class="btn reject-btn">
+                            <i class="bi bi-person-x"></i> Reject
+                        </a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="no-data">No students found.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<style>
+/* Back button */
+.back-btn {
+    background-color: #6c757d;
+    color: #fff;
+    padding: 6px 14px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-bottom: 15px;
+    transition: background 0.3s;
+}
+
+.back-btn:hover {
+    background-color: #5a6268;
+}
+
+/* Container for responsive table */
+.table-container {
+    overflow-x: auto;
+    margin-top: 10px;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Table styling */
+.student-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 800px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+/* Header */
+.student-table thead {
+    background-color: #343a40;
+    color: #fff;
+    text-align: left;
+}
+
+.student-table thead th {
+    padding: 12px 15px;
+}
+
+/* Table rows */
+.student-table tbody tr {
+    transition: background 0.3s ease;
+}
+
+.student-table tbody tr:hover {
+    background-color: #f2f2f2;
+}
+
+/* Approved and pending rows */
+.student-table tbody tr.approved {
+    background-color: #e6f9e6;
+}
+
+.student-table tbody tr.pending {
+    background-color: #fff4e6;
+}
+
+/* Table cells */
+.student-table td {
+    padding: 10px 15px;
+    vertical-align: middle;
+}
+
+/* Status badges */
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.approved {
+    background-color: #28a745;
+    color: #fff;
+}
+
+.status-badge.pending {
+    background-color: #ffc107;
+    color: #212529;
+}
+
+/* Action buttons */
+.btn {
+    padding: 5px 12px;
+    font-size: 0.85rem;
+    border-radius: 5px;
+    text-decoration: none;
+    color: #fff;
+    transition: background 0.3s ease;
+}
+
+.approve-btn {
+    background-color: #28a745;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
+
+/* Actions column center */
+.actions {
+    text-align: center;
+}
+
+/* No data row */
+.no-data {
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
+</style>
+{% endblock %}
